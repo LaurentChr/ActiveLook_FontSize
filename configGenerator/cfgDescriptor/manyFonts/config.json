@@ -1,0 +1,49 @@
+{
+    "config":[
+        {"deprecated": false, "cfg": "cfgLaurent8", "cfgVersion": 1, "cfgKey": 123456}
+    ],
+
+    "fonts":[
+        {"id": 10, "path": "./font/msyh.ttc", "height": 10, "first": 2, "last": 126},
+        {"id": 11, "path": "./font/msyh.ttc", "height": 11, "first": 2, "last": 126},
+        {"id": 12, "path": "./font/msyh.ttc", "height": 12, "first": 2, "last": 126},
+        {"id": 13, "path": "./font/msyh.ttc", "height": 13, "first": 2, "last": 126},
+        {"id": 14, "path": "./font/msyh.ttc", "height": 14, "first": 2, "last": 126},
+        {"id": 15, "path": "./font/msyh.ttc", "height": 15, "first": 2, "last": 126},
+        {"id": 16, "path": "./font/msyh.ttc", "height": 16, "first": 2, "last": 126},
+        {"id": 17, "path": "./font/msyh.ttc", "height": 17, "first": 2, "last": 126},
+        {"id": 18, "path": "./font/msyh.ttc", "height": 18, "first": 2, "last": 126},
+        {"id": 19, "path": "./font/msyh.ttc", "height": 19, "first": 2, "last": 126},
+        {"id": 20, "path": "./font/msyh.ttc", "height": 20, "first": 2, "last": 126},
+        {"id": 21, "path": "./font/msyh.ttc", "height": 21, "first": 2, "last": 126},
+        {"id": 22, "path": "./font/msyh.ttc", "height": 22, "first": 2, "last": 126},
+        {"id": 23, "path": "./font/msyh.ttc", "height": 23, "first": 2, "last": 126},
+        {"id": 24, "path": "./font/msyh.ttc", "height": 24, "first": 2, "last": 126},
+        {"id": 25, "path": "./font/msyh.ttc", "height": 25, "first": 2, "last": 126},
+        {"id": 26, "path": "./font/msyh.ttc", "height": 26, "first": 2, "last": 126},
+        {"id": 27, "path": "./font/msyh.ttc", "height": 27, "first": 2, "last": 126},
+        {"id": 28, "path": "./font/msyh.ttc", "height": 28, "first": 2, "last": 126},
+        {"id": 29, "path": "./font/msyh.ttc", "height": 29, "first": 2, "last": 126},
+        {"id": 30, "path": "./font/msyh.ttc", "height": 30, "first": 2, "last": 126},
+        {"id": 31, "path": "./font/msyh.ttc", "height": 31, "first": 2, "last": 126},
+        {"id": 32, "path": "./font/msyh.ttc", "height": 32, "first": 2, "last": 126}
+    ],
+
+    "layoutDelete":[
+    ],
+
+    "layouts": [
+    ],
+
+    "imgDelete":[
+    ],
+
+    "imgs": [
+	],
+
+    "anim": [
+    ],
+
+    "pages": [
+    ]
+}

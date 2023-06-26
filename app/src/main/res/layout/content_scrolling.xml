@@ -130,7 +130,7 @@
                     android:textSize="20dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:text="10" />
+                    android:text="16" />
             </LinearLayout>
 
             <LinearLayout
@@ -146,6 +146,7 @@
                     android:id="@+id/fontSizeSeekBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:progress="8"
                     android:max="22" />
             </LinearLayout>
 
@@ -173,7 +174,7 @@
                     android:textSize="20dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:text="0" />
+                    android:text="2" />
             </LinearLayout>
 
             <LinearLayout
@@ -189,6 +190,7 @@
                     android:id="@+id/spaceSizeSeekBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:progress="2"
                     android:max="9" />
             </LinearLayout>
 

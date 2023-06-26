@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Glasses connectedGlasses;
     public String langCode= Locale.getDefault().getLanguage();
-    private boolean clockON=true, imageON=false;
+    private boolean clockON=true, imageON=true;
     private int fontSize=16, lineSpace=0;
     private final String[] poem_fr = {"Sous le pont Mirabeau coule la Seine",
             "Et nos amours",

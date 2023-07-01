@@ -47,13 +47,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
 public class MainActivity extends AppCompatActivity {
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Glasses connectedGlasses;
     public String langCode= Locale.getDefault().getLanguage();
     private boolean clockON=true, imageON=true;
-    private int fontSize=16, lineSpace=0;
+    private int fontSize=16, lineSpace=0, gbattery=50;
     private final String[] poem_fr = {"Sous le pont Mirabeau coule la Seine",
             "Et nos amours",
             "Faut-il qu’il m’en souvienne",
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch sensorSwitch, clockSwitch, textImage;
     private SeekBar luminanceSeekBar, fontSizeSeekBar, spaceSizeSeekBar;
-    private TextView largeText, fontSizeTextView, spaceSizeTextView;
+    private TextView largeText, GlassesBattery, fontSizeTextView, spaceSizeTextView;
     private Spinner LangChoice;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -202,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         largeText = findViewById(R.id.largeText);
+        GlassesBattery = this.findViewById(R.id.GlassesBattery);
         luminanceSeekBar = this.findViewById(R.id.luminanceSeekBar);
         fontSizeSeekBar = this.findViewById(R.id.fontSizeSeekBar);
         spaceSizeSeekBar = this.findViewById(R.id.spaceSizeSeekBar);
@@ -224,12 +224,14 @@ public class MainActivity extends AppCompatActivity {
 
 //---------------------------------------------------------------------------------
 
+    @SuppressLint("SetTextI18n")
     private void updateText(int fs, int ls) {
         final Glasses g = this.connectedGlasses;
         int line0 = 254, poemLin = 0,y;
         if(imageON){line0 -= fs; }
         if (g != null) {g.clear();}
         if (clockON) {displayClock(); line0 -= 30;}
+        GlassesBattery.setText("Glasses battery : "+String.format("%d",gbattery)+"%");
         y = line0;
         if (g != null) { g.cfgSet("cfgLaurent8");
             while (y>fs) {
@@ -283,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         String clock = sdf.format(new Date());
         final Glasses g = connectedGlasses;
         if (g != null) {
-            g.battery(r1 -> {
+            g.battery(r1 -> { gbattery=r1;
                 connectedGlasses.cfgSet("ALooK");
                 if (r1 < 25) {connectedGlasses.imgDisplay((byte) 1, (short) 270, (short) 226);}
                 else {connectedGlasses.imgDisplay((byte) 0, (short) 270, (short) 226);}

@@ -60,4 +60,50 @@ I have modified :
 * ALookCom\fontAdd  : replaced with the one found here in : ALookCom\fontAdd_fr
 * cfgDescriptor\manyFonts directory : new config files
 
+The text to be shown in the glasses need to be treated by a function inluded in app\src\main\java\com\fontsize\demo\MainActivity.java :
+```
+    public static String international_accent(String text) {
+        text = text.replaceAll("Ă","A");
+        text = text.replaceAll("Ā","A");
+        text = text.replaceAll("Ė","E");
+        text = text.replaceAll("Ē","E");
+        text = text.replaceAll("Ī","I");
+            . . . . .
+        text = text.replaceAll("]",")");
+        text = text.replaceAll("\\{","(");
+        text = text.replaceAll("\\}",")");
+        text = text.replaceAll("œ","oe");
+        text = text.replaceAll("æ","ae");
+        text = text.replaceAll(String.valueOf((char) 0xA0)," "); // Non-breaking space
+ 
+        text = text.replaceAll("á",String.valueOf((char) 2));
+        text = text.replaceAll("à",String.valueOf((char) 3));
+        text = text.replaceAll("â",String.valueOf((char) 4));
+        text = text.replaceAll("ä",String.valueOf((char) 5));
+        text = text.replaceAll("ã",String.valueOf((char) 6));
+        text = text.replaceAll("å",String.valueOf((char) 7));
+        text = text.replaceAll("é",String.valueOf((char) 8));
+        text = text.replaceAll("è",String.valueOf((char) 9));
+        text = text.replaceAll("ê",String.valueOf((char) 11));
+        text = text.replaceAll("ë",String.valueOf((char) 12));
+            . . . . .
+        text = text.replaceAll("ç",String.valueOf((char) 30));
+        text = text.replaceAll("ñ",String.valueOf((char) 31));
+        text = text.replaceAll("č",String.valueOf((char) 35)); // #
+        text = text.replaceAll("ć",String.valueOf((char) 35)); // #
+        text = text.replaceAll("đ",String.valueOf((char) 91)); // [
+        text = text.replaceAll("š",String.valueOf(
+                (char) 92)+String.valueOf((char) 92)); // \
+        text = text.replaceAll("ž",String.valueOf((char) 93)); // ]
+        text = text.replaceAll("ą",String.valueOf((char) 94)); // ^
+        text = text.replaceAll("ę",String.valueOf((char) 95)); // _
+        text = text.replaceAll("ş",String.valueOf((char) 96)); // `
+        text = text.replaceAll("ł",String.valueOf((char) 123)); // {
+        text = text.replaceAll("ß",String.valueOf((char) 124)); // |
+        text = text.replaceAll("€",String.valueOf((char) 125)); // }
+        text = text.replaceAll("£",String.valueOf((char) 126)); // ~
+        return text;
+}
+```
+
 If you want to use a different font or different sizes, do not hezitate to change the config.json file.

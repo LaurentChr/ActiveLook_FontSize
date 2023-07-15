@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,6 +16,7 @@ import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextPaint;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Glasses connectedGlasses;
     public String langCode= Locale.getDefault().getLanguage();
-    private boolean clockON=true, imageON=true;
-    private int fontSize=16, lineSpace=0, gbattery=50;
+    private boolean clockON=true, imageON=true, glassesSetting=false;
+    private int fontSize=16, lineSpace=0, gbattery=0, topmrg=0, botmrg=0, lftmrg=0, rgtmrg=0;
     private final String[] poem_fr = {"Sous le pont Mirabeau coule la Seine",
             "Et nos amours",
             "Faut-il qu’il m’en souvienne",
@@ -140,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
             "Den tränger undan mig.",
             "Den kastar mig ur boet.",
             "Dikten är färdig."};
-    private String[] poem_zh ={"你问我爱你有多深",
+    private String[] poem_zh ={
+//            "一二三四五六七巴九十一二三四五六七巴九十一二三四五六七巴九十一二三四五六七巴九十",
+            "你问我爱你有多深",
             "我爱你有几分",
             "我的情也真",
             "我的爱也真",
@@ -156,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
             "教我思念到如今",
             "你问我爱你有多深",
             "我爱你有几分",
-            "你去想一想","你去看一看",
+            "你去想一想",
+            "你去看一看",
             "月亮代表我的心",
             "轻轻的一个吻",
             "已经打动我的心",
@@ -177,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar luminanceSeekBar, fontSizeSeekBar, spaceSizeSeekBar;
     private TextView largeText, GlassesBattery, fontSizeTextView, spaceSizeTextView;
     private Spinner LangChoice;
+    private ToggleButton adjusmentSet;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @SuppressLint({"BatteryLife", "MissingInflatedId"})
@@ -201,12 +208,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         largeText = findViewById(R.id.largeText);
-        GlassesBattery = this.findViewById(R.id.GlassesBattery);
         luminanceSeekBar = this.findViewById(R.id.luminanceSeekBar);
         fontSizeSeekBar = this.findViewById(R.id.fontSizeSeekBar);
         spaceSizeSeekBar = this.findViewById(R.id.spaceSizeSeekBar);
         sensorSwitch = this.findViewById(R.id.sensorSwitch);
+        GlassesBattery = this.findViewById(R.id.GlassesBattery);
         clockSwitch = this.findViewById(R.id.clockSwitch);
+        adjusmentSet = this.findViewById(R.id.adjusment_set);
+
         textImage = this.findViewById(R.id.textImage);
         langCode=Locale.getDefault().getLanguage();
         LangChoice = this.findViewById(R.id.lang_choice);
@@ -214,30 +223,37 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter_lang = new ArrayAdapter<>(this, R.layout.list_item, Lang_Choice);
         LangChoice.setAdapter(adapter_lang);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        topmrg = sharedPreferences.getInt("topmrg", 0);
+        botmrg = sharedPreferences.getInt("botmrg", 0);
+        lftmrg = sharedPreferences.getInt("lftmrg", 0);
+        rgtmrg = sharedPreferences.getInt("rgtmrg", 0);
+
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout toolBarLayout = findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(getTitle());
         this.updateVisibility();
         this.bindActions();
-
     }
 
 //---------------------------------------------------------------------------------
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void updateText(int fs, int ls) {
         final Glasses g = this.connectedGlasses;
-        int line0 = 254, poemLin = 0,y;
+        int line0 = 255-topmrg, poemLin = 0, y;
+        if (gbattery !=0 ) {GlassesBattery.setText("Glasses battery : "+String.format("%d",gbattery)+"%");}
         if(imageON){line0 -= fs; }
-        if (g != null) {g.clear();}
         if (clockON) {displayClock(); line0 -= 30;}
-        GlassesBattery.setText("Glasses battery : "+String.format("%d",gbattery)+"%");
         y = line0;
-        if (g != null) { g.cfgSet("cfgLaurent8");
-            while (y>fs) {
+        if (g!=null && glassesSetting) {g.clear(); displayClock();
+            g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}
+        if (g != null && !glassesSetting) { g.cfgSet("cfgLaurent8"); g.clear();
+//            g.shift((short) lftmrg, (short) topmrg);
+            while (y > fs+botmrg) {
                 if(imageON){g.imgStream(textAsBitmap(poem[poemLin], fs), ImgStreamFormat.MONO_4BPP_HEATSHRINK,
-                        (short) (300-(textAsBitmap(poem[poemLin], fs)).getWidth()), (short) y);}
-                else{g.txt((short)300, (short) y, Rotation.TOP_LR, (byte) fs, (byte) 0x0F,
+                        (short) (300-lftmrg-(textAsBitmap(poem[poemLin], fs)).getWidth()), (short) y);}
+                else{g.txt((short) (300-lftmrg), (short) y, Rotation.TOP_LR, (byte) fs, (byte) 0x0F,
                  international_accent(poem[poemLin]));}
                 poemLin ++; y = y-fs-ls;
             }
@@ -283,26 +299,27 @@ public class MainActivity extends AppCompatActivity {
         int batLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         String clock = sdf.format(new Date());
+        int top=255-topmrg;
         final Glasses g = connectedGlasses;
         if (g != null) {
             g.battery(r1 -> { gbattery=r1;
                 connectedGlasses.cfgSet("ALooK");
-                if (r1 < 25) {connectedGlasses.imgDisplay((byte) 1, (short) 270, (short) 226);}
-                else {connectedGlasses.imgDisplay((byte) 0, (short) 270, (short) 226);}
-                connectedGlasses.txt(new Point(263, 254), Rotation.TOP_LR, (byte) 1, (byte) 0x0F,
+                if (r1 < 25) {connectedGlasses.imgDisplay((byte) 1, (short) (272-lftmrg), (short) (top-26));}
+                else {connectedGlasses.imgDisplay((byte) 0, (short) (272-lftmrg), (short) (top-26));}
+                connectedGlasses.txt(new Point((263-lftmrg), top), Rotation.TOP_LR, (byte) 1, (byte) 0x0F,
                         String.format("%d", r1) + "% / " + String.format("%d", batLevel) + "%  ");
-                connectedGlasses.txt(new Point(100, 254), Rotation.TOP_LR, (byte) 1, (byte) 0x0F, clock);
+                connectedGlasses.txt(new Point(100+rgtmrg, top), Rotation.TOP_LR, (byte) 1, (byte) 0x0F, clock);
             });//Glasses Battery
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void bindActions() {
         // If BT is not on, request that it be enabled.
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
             Toast.makeText(getApplicationContext(),
-                    "Your BLUETOOTH is not open !!!/n>>>relaunch the application", Toast.LENGTH_LONG).show();
+                    "Your BLUETOOTH is not open !!!\n>>>relaunch the application", Toast.LENGTH_LONG).show();
             largeText.setText("Your BlueTooth is not open !!\n\n" +
                     "Please open BlueTooth and\n\n relaunch the application.");
             largeText.setTextColor(Color.parseColor("#FF0000"));
@@ -318,7 +335,6 @@ public class MainActivity extends AppCompatActivity {
             connectedGlasses.sensor(true);
             MainActivity.this.disconnect();
         });
-
 
         sensorSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 MainActivity.this.sensorSwitch(isChecked));
@@ -374,6 +390,83 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {poem=poem_fr;}
         });
 
+        adjusmentSet.setOnCheckedChangeListener((buttonView, isChecked) -> {glassesSetting=isChecked;
+            if(isChecked) {this.findViewById(R.id.adjusment_content).setVisibility(View.VISIBLE);
+                Glasses g=connectedGlasses;
+                if (g!=null) {g.clear(); displayClock();
+                    g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}
+            }
+            else {this.findViewById(R.id.adjusment_content).setVisibility(View.GONE);
+                updateText(fontSize, lineSpace);}
+        });
+
+        this.findViewById(R.id.topMinus).setOnClickListener(view -> { topmrg--; if (topmrg<0) {topmrg=0;}
+            Glasses g=connectedGlasses;
+            TextView topMarginTV=this.findViewById(R.id.topMargin);
+            topMarginTV.setText("Top\n-"+String.format("%d",topmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+            g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.topPlus).setOnClickListener(view ->  { topmrg++; if (topmrg>50) {topmrg=50;}
+            Glasses g=connectedGlasses;
+            TextView topMarginTV=this.findViewById(R.id.topMargin);
+            topMarginTV.setText("Top\n-"+String.format("%d",topmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.bottomMinus).setOnClickListener(view -> { botmrg--; if (botmrg<0) {botmrg=0;}
+            Glasses g=connectedGlasses;
+            TextView bottomMarginTV=this.findViewById(R.id.bottomMargin);
+            bottomMarginTV.setText("Bottom\n-"+String.format("%d",botmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.bottomPlus).setOnClickListener(view ->  { botmrg++; if (botmrg>50) {botmrg=50;}
+            Glasses g=connectedGlasses;
+            TextView bottomMarginTV=this.findViewById(R.id.bottomMargin);
+            bottomMarginTV.setText("Bottom\n-"+String.format("%d",botmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.leftMinus).setOnClickListener(view -> { lftmrg--; if (lftmrg<0) {lftmrg=0;}
+            Glasses g=connectedGlasses;
+            TextView leftMarginTV=this.findViewById(R.id.leftMargin);
+            leftMarginTV.setText("Left\n-"+String.format("%d",lftmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.leftPlus).setOnClickListener(view ->  { lftmrg++; if (lftmrg>50) {lftmrg=50;}
+            Glasses g=connectedGlasses;
+            TextView leftMarginTV=this.findViewById(R.id.leftMargin);
+            leftMarginTV.setText("Left\n-"+String.format("%d",lftmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.rightMinus).setOnClickListener(view -> { rgtmrg--; if (rgtmrg<0) {rgtmrg=0;}
+            Glasses g=connectedGlasses;
+            TextView rightMarginTV=this.findViewById(R.id.rightMargin);
+            rightMarginTV.setText("Right\n-"+String.format("%d",rgtmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+        this.findViewById(R.id.rightPlus).setOnClickListener(view ->  { rgtmrg++; if (rgtmrg>50) {rgtmrg=50;}
+            Glasses g=connectedGlasses;
+            TextView rightMarginTV=this.findViewById(R.id.rightMargin);
+            rightMarginTV.setText("Right\n-"+String.format("%d",rgtmrg)+"px");
+            savePreferences();
+            if (g!=null) { g.clear(); displayClock();
+                g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
+
+    }
+
+    private void savePreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("topmrg",topmrg);
+        editor.putInt("botmrg",botmrg);
+        editor.putInt("lftmrg",lftmrg);
+        editor.putInt("rgtmrg",rgtmrg);
+        editor.apply();
     }
 
     public Bitmap textAsBitmap(String text, int textSize) {

@@ -130,7 +130,7 @@
                     android:textSize="20dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:text="16" />
+                    android:text="18" />
             </LinearLayout>
 
             <LinearLayout
@@ -235,7 +235,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="32dp" />
+                android:layout_height="24dp" />
 
             <Button
                 android:id="@+id/button_disconnect"
@@ -243,6 +243,140 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/error"
                 android:text="@string/menu_disconnect" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <ToggleButton
+                android:id="@+id/adjusment_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/toggle_color"
+                android:textOn="  glasses screen adjustment : ON "
+                android:textOff="  set glasses screen adjustment  "
+            />
+            <LinearLayout
+                android:id="@+id/adjusment_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Adjust the margin at each side of the screen\nYou should see the frame border on each side"
+                    />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                >
+                <Button
+                    android:id="@+id/topMinus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="-" />
+                <TextView
+                    android:id="@+id/topMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Top"
+                    />
+                <Button
+                    android:id="@+id/topPlus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="+" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+                <Button
+                    android:id="@+id/leftMinus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="-" />
+                <TextView
+                    android:id="@+id/leftMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="270"
+                    android:text="Left" />
+                <Button
+                    android:id="@+id/leftPlus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="+" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Glasses\nadjustment"
+                    android:gravity="top|center"
+                    android:textStyle="bold"
+                    android:layout_weight="3" />
+                <Button
+                    android:id="@+id/rightMinus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="-" />
+                <TextView
+                    android:id="@+id/rightMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:rotation="90"
+                    android:text="Right"
+                    />
+                <Button
+                    android:id="@+id/rightPlus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:textStyle="bold"
+                    android:text="+" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                >
+                <Button
+                    android:id="@+id/bottomMinus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:text="-" />
+                <TextView
+                    android:id="@+id/bottomMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bottom"
+                    />
+                <Button
+                    android:id="@+id/bottomPlus"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:text="+" />
+            </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

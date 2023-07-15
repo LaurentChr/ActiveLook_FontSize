@@ -5,12 +5,12 @@ def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.fontsize.demo"
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 2
         versionName "2.0"
 

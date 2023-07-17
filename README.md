@@ -1,7 +1,9 @@
 # ActiveLook® FONTSIZES
 
 Description : Try different font sizes in your Augmented Reality ActiveLook® smart glasses
-   
+
+<p align="center"> <img src="./ActiveLook_fontSizes_1024.png"/ </p>
+
 ### License
 
 ```

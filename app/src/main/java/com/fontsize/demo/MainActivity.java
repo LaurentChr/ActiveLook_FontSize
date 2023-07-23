@@ -1,5 +1,7 @@
 package com.fontsize.demo;
 
+import static java.lang.Math.max;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Glasses connectedGlasses;
     public String langCode= Locale.getDefault().getLanguage();
-    private boolean clockON=true, imageON=true, glassesSetting=false;
+    private boolean clockON=true, imageON=true, BPP4ON=true, italicON=false, boldON=false, fontON=false, glassesSetting=false;
     private int fontSize=16, lineSpace=0, gbattery=0, topmrg=0, botmrg=0, lftmrg=0, rgtmrg=0;
     private final String[] poem_fr = {"Sous le pont Mirabeau coule la Seine",
             "Et nos amours",
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             "Entrance at my chamber door;",
             "This it is, and nothing more.'",
             "Merely this, and nothing more."};
-    private String[] poem_sv ={"Morgonfåglar",
+    private final String[] poem_sv ={"Morgonfåglar",
             "Jag väcker bilen",
             "som har vindrutan överdragen med frömjöl.",
             "Jag sätter på mig solglasögonen.",
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             "Den tränger undan mig.",
             "Den kastar mig ur boet.",
             "Dikten är färdig."};
-    private String[] poem_zh ={
+    private final String[] poem_zh ={
 //            "一二三四五六七巴九十一二三四五六七巴九十一二三四五六七巴九十一二三四五六七巴九十",
             "你问我爱你有多深",
             "我爱你有几分",
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 //    Runnable clockRunnable;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch sensorSwitch, clockSwitch, textImage;
+    private Switch sensorSwitch, clockSwitch, textImage, textImage4BPP, textItalic, textBold, textFont;
     private SeekBar luminanceSeekBar, fontSizeSeekBar, spaceSizeSeekBar;
     private TextView largeText, GlassesBattery, fontSizeTextView, spaceSizeTextView;
     private Spinner LangChoice;
@@ -217,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
         adjusmentSet = this.findViewById(R.id.adjusment_set);
 
         textImage = this.findViewById(R.id.textImage);
+        textImage4BPP = this.findViewById(R.id.textImage4BPP);
+        textItalic = this.findViewById(R.id.textItalic);
+        textBold = this.findViewById(R.id.textBold);
+        textFont = this.findViewById(R.id.textFont);
         langCode=Locale.getDefault().getLanguage();
         LangChoice = this.findViewById(R.id.lang_choice);
         String[] Lang_Choice = getResources().getStringArray(R.array.langChoice);
@@ -224,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
         LangChoice.setAdapter(adapter_lang);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        fontSize = sharedPreferences.getInt("fontSize", 16);
+        lineSpace = sharedPreferences.getInt("lineSpace", 0);
         topmrg = sharedPreferences.getInt("topmrg", 0);
         botmrg = sharedPreferences.getInt("botmrg", 0);
         lftmrg = sharedPreferences.getInt("lftmrg", 0);
@@ -251,8 +259,12 @@ public class MainActivity extends AppCompatActivity {
         if (g != null && !glassesSetting) { g.cfgSet("cfgLaurent8"); g.clear();
 //            g.shift((short) lftmrg, (short) topmrg);
             while (y > fs+botmrg) {
-                if(imageON){g.imgStream(textAsBitmap(poem[poemLin], fs), ImgStreamFormat.MONO_4BPP_HEATSHRINK,
-                        (short) (300-lftmrg-(textAsBitmap(poem[poemLin], fs)).getWidth()), (short) y);}
+                if(imageON){
+                    if(BPP4ON){g.imgStream(textAsBitmap(poem[poemLin], fs, italicON, boldON), ImgStreamFormat.MONO_4BPP_HEATSHRINK,
+                        (short) (300-lftmrg-(textAsBitmap(poem[poemLin], fs, italicON, boldON)).getWidth()), (short) y);}
+                    else{g.imgStream(textAsBitmap(poem[poemLin], fs, italicON, boldON), ImgStreamFormat.MONO_1BPP,
+                            (short) (300-lftmrg-(textAsBitmap(poem[poemLin], fs, italicON, boldON)).getWidth()), (short) y);}
+                }
                 else{g.txt((short) (300-lftmrg), (short) y, Rotation.TOP_LR, (byte) fs, (byte) 0x0F,
                  international_accent(poem[poemLin]));}
                 poemLin ++; y = y-fs-ls;
@@ -353,6 +365,18 @@ public class MainActivity extends AppCompatActivity {
 
         textImage.setOnCheckedChangeListener((buttonView, isChecked) ->
                 MainActivity.this.textImage(isChecked));
+
+        textImage4BPP.setOnCheckedChangeListener((buttonView, isChecked) ->
+                MainActivity.this.textImage4BPP(isChecked));
+
+        textItalic.setOnCheckedChangeListener((buttonView, isChecked) ->
+                MainActivity.this.textItalic(isChecked));
+
+        textBold.setOnCheckedChangeListener((buttonView, isChecked) ->
+                MainActivity.this.textBold(isChecked));
+
+        textFont.setOnCheckedChangeListener((buttonView, isChecked) ->
+                MainActivity.this.textFont(isChecked));
 
         fontSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @SuppressLint("DefaultLocale")
@@ -462,6 +486,8 @@ public class MainActivity extends AppCompatActivity {
     private void savePreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("fontSize",fontSize);
+        editor.putInt("lineSpace",lineSpace);
         editor.putInt("topmrg",topmrg);
         editor.putInt("botmrg",botmrg);
         editor.putInt("lftmrg",lftmrg);
@@ -469,14 +495,29 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public Bitmap textAsBitmap(String text, int textSize) {
+    //////// --------------------------------------------------------------------------------------------
+    public Bitmap textAsBitmap(String text, int textSize, boolean italic, boolean bold) {
         TextPaint tp = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         tp.setTextSize(textSize);
         tp.setColor(Color.WHITE); // white for text
         tp.setTextAlign(Paint.Align.LEFT);
+
+        Typeface EXTfont = Typeface.createFromAsset(this.getAssets(), "LibreBodoni-Regular.ttf");
+        if (fontON) {tp.setTypeface(EXTfont);} // use external font
+        else {tp.setTypeface(Typeface.SERIF);} // use Android SERIF font
+        if (italic && !bold && fontON) {tp.setTypeface(Typeface.createFromAsset(this.getAssets(),
+                "LibreBodoni-Italic.ttf"));}
+        if (!italic && bold && fontON) {tp.setTypeface(Typeface.createFromAsset(this.getAssets(),
+                "LibreBodoni-Bold.ttf"));}
+        if (italic && bold && fontON) {tp.setTypeface(Typeface.createFromAsset(this.getAssets(),
+                "LibreBodoni-BoldItalic.ttf"));}
+
+        if (bold && !italic && !fontON) {tp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));}
+        if (italic && !bold && !fontON) {tp.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));}
+        if (italic && bold && !fontON) {tp.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));}
         float baseline = -tp.ascent(); // ascent() is negative
-        int width = (int) (tp.measureText(text) + 0.5f); // round
-        int height = (int) (baseline + tp.descent() + 0.5f);
+        int width = (int) (max(tp.measureText(text) + 0.5f,1)); // round with a min of 1
+        int height = (int) (max(baseline + tp.descent() + 0.5f,1));
         Paint bp = new Paint(Paint.ANTI_ALIAS_FLAG);
         bp.setStyle(Paint.Style.FILL);
         bp.setColor(Color.BLACK); // black for background
@@ -486,6 +527,7 @@ public class MainActivity extends AppCompatActivity {
         c.drawText(text, 0, baseline, tp);
         return image;
     }
+    //////// --------------------------------------------------------------------------------------------
 
 
     /////////  LUMINANCE  bar and switch
@@ -495,6 +537,14 @@ public class MainActivity extends AppCompatActivity {
     private void clockSwitch(boolean on) {clockON = on; MainActivity.this.updateText(fontSize, lineSpace);}
 
     private void textImage(boolean on) {imageON = on; MainActivity.this.updateText(fontSize, lineSpace);}
+
+    private void textImage4BPP(boolean on) {BPP4ON = on; MainActivity.this.updateText(fontSize, lineSpace);}
+
+    private void textItalic(boolean on) {italicON = on; MainActivity.this.updateText(fontSize, lineSpace);}
+
+    private void textBold(boolean on) {boldON = on; MainActivity.this.updateText(fontSize, lineSpace);}
+
+    private void textFont(boolean on) {fontON = on; MainActivity.this.updateText(fontSize, lineSpace);}
 
     @SuppressLint("SetTextI18n")
     private void setUIGlassesInformations() {

@@ -206,13 +206,27 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.disconnect();     });
         }
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        fontSize = sharedPreferences.getInt("fontSize", 16);
+        lineSpace = sharedPreferences.getInt("lineSpace", 0);
+        topmrg = sharedPreferences.getInt("topmrg", 0);
+        botmrg = sharedPreferences.getInt("botmrg", 0);
+        lftmrg = sharedPreferences.getInt("lftmrg", 0);
+        rgtmrg = sharedPreferences.getInt("rgtmrg", 0);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_scrolling);
         Toolbar toolbar = this.findViewById(R.id.toolbar);
         largeText = findViewById(R.id.largeText);
         luminanceSeekBar = this.findViewById(R.id.luminanceSeekBar);
+        fontSizeTextView = MainActivity.this.findViewById(R.id.fontSizeTextView);
+        fontSizeTextView.setText(String.format("%2d", fontSize));
         fontSizeSeekBar = this.findViewById(R.id.fontSizeSeekBar);
+        fontSizeSeekBar.setProgress(fontSize-10);
+        spaceSizeTextView = MainActivity.this.findViewById(R.id.spaceSizeTextView);
+        spaceSizeTextView.setText(String.format("%1d", lineSpace));
         spaceSizeSeekBar = this.findViewById(R.id.spaceSizeSeekBar);
+        spaceSizeSeekBar.setProgress(lineSpace);
         sensorSwitch = this.findViewById(R.id.sensorSwitch);
         GlassesBattery = this.findViewById(R.id.GlassesBattery);
         clockSwitch = this.findViewById(R.id.clockSwitch);
@@ -228,14 +242,6 @@ public class MainActivity extends AppCompatActivity {
         String[] Lang_Choice = getResources().getStringArray(R.array.langChoice);
         ArrayAdapter<String> adapter_lang = new ArrayAdapter<>(this, R.layout.list_item, Lang_Choice);
         LangChoice.setAdapter(adapter_lang);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        fontSize = sharedPreferences.getInt("fontSize", 16);
-        lineSpace = sharedPreferences.getInt("lineSpace", 0);
-        topmrg = sharedPreferences.getInt("topmrg", 0);
-        botmrg = sharedPreferences.getInt("botmrg", 0);
-        lftmrg = sharedPreferences.getInt("lftmrg", 0);
-        rgtmrg = sharedPreferences.getInt("rgtmrg", 0);
 
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout toolBarLayout = findViewById(R.id.toolbar_layout);
@@ -381,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
         fontSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @SuppressLint("DefaultLocale")
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                fontSize = progress+10;
+                fontSize = progress+10; savePreferences();
                 fontSizeTextView = MainActivity.this.findViewById(R.id.fontSizeTextView);
                 fontSizeTextView.setText(String.format("%2d", fontSize));
                 MainActivity.this.updateText(fontSize, lineSpace);}
@@ -392,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         spaceSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @SuppressLint("DefaultLocale")
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                lineSpace = progress;
+                lineSpace = progress; savePreferences();
                 spaceSizeTextView = MainActivity.this.findViewById(R.id.spaceSizeTextView);
                 spaceSizeTextView.setText(String.format("%1d", lineSpace));
                 MainActivity.this.updateText(fontSize, lineSpace);}

@@ -94,8 +94,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="32dp" />
-
+                android:layout_height="24dp" />
             <Switch
                 android:id="@+id/clockSwitch"
                 android:layout_width="wrap_content"
@@ -105,10 +104,9 @@
                 android:text="Batteries level and clock display :  "
                 android:gravity="end|center_vertical"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
-
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="24dp" />
+                android:layout_height="18dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,7 +150,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="18dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -196,7 +194,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="18dp" />
 
             <Switch
                 android:id="@+id/textImage"
@@ -204,13 +202,79 @@
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Text displayed as an image :   "
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="Text displayed as an image :"
                 android:gravity="end|center_vertical"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="10dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Options for the text displayd as image :"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <Switch
+                    android:id="@+id/textImage4BPP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="1BPP/4BPP :"
+                    android:gravity="end|center_vertical"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent" />
+                <Switch
+                    android:id="@+id/textItalic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:text=" italic :"
+                    android:gravity="end|center_vertical"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <Switch
+                    android:id="@+id/textFont"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:text="internal/external font :"
+                    android:gravity="end|center_vertical"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
+                <Switch
+                    android:id="@+id/textBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:text="bold :"
+                    android:gravity="end|center_vertical"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="18dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -221,6 +285,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:textSize="15dp"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_weight="1"
                     android:text="Language of the text : " />

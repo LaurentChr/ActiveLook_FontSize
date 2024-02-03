@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "ActiveLook FontSize"
+rootProject.name = "ActiveLook FontSize Demo"

@@ -8,7 +8,7 @@
     <string name="button_scan">Scan</string>
     <string name="bubble_button">Bubble button</string>
 
-    <string name="app_version">v1.0</string>
+    <string name="app_version">v2.0</string>
 
     <!-- Placeholder string for if the image doesn't load -->
     <string name="notification_logo">Intercepted Notification Logo</string>
@@ -112,5 +112,5 @@
         <item>Svenska</item>
         <item>中文-Chinese</item>
     </string-array>
-
+    
 </resources>

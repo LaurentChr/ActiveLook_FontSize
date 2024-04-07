@@ -203,7 +203,6 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:textSize="15dp"
-                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:text="Text displayed as an image :"
                 android:gravity="end|center_vertical"
@@ -272,6 +271,11 @@
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Options for the text from fonts :"/>
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="18dp" />
@@ -317,7 +321,9 @@
             <ToggleButton
                 android:id="@+id/adjusment_set"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
+				android:paddingTop="0dp"
+				android:paddingBottom="0dp"
                 android:layout_gravity="center"
                 android:background="@drawable/toggle_color"
                 android:textOn="  glasses screen adjustment : ON "

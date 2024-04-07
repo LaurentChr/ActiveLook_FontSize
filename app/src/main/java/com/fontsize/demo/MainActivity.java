@@ -18,6 +18,7 @@ import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextPaint;
 import android.view.Menu;
@@ -39,6 +40,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.activelook.activelooksdk.Glasses;
 import com.activelook.activelooksdk.types.ImgStreamFormat;
@@ -58,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
     public String langCode= Locale.getDefault().getLanguage();
     private boolean clockON=true, imageON=true, BPP4ON=true, italicON=false, boldON=false, fontON=false, glassesSetting=false;
     private int fontSize=16, lineSpace=0, gbattery=0, topmrg=0, botmrg=0, lftmrg=0, rgtmrg=0;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private Switch sensorSwitch, clockSwitch, textImage, textImage4BPP, textItalic, textBold, textFont;
+    private SeekBar luminanceSeekBar, fontSizeSeekBar, spaceSizeSeekBar;
+    private TextView largeText, GlassesBattery, fontSizeTextView, spaceSizeTextView;
+    private Spinner LangChoice;
+    private ToggleButton adjusmentSet;
+
     private final String[] poem_fr = {"Sous le pont Mirabeau coule la Seine",
             "Et nos amours",
             "Faut-il qu’il m’en souvienne",
@@ -177,15 +186,8 @@ public class MainActivity extends AppCompatActivity {
             "你去想一想 你去看一看",
             "月亮代表我的心"};
     private String[] poem=poem_fr;
-//    Handler clockHandler = new Handler();
-//    Runnable clockRunnable;
-
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch sensorSwitch, clockSwitch, textImage, textImage4BPP, textItalic, textBold, textFont;
-    private SeekBar luminanceSeekBar, fontSizeSeekBar, spaceSizeSeekBar;
-    private TextView largeText, GlassesBattery, fontSizeTextView, spaceSizeTextView;
-    private Spinner LangChoice;
-    private ToggleButton adjusmentSet;
+    Handler clockHandler = new Handler();
+    Runnable clockRunnable;
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @SuppressLint({"BatteryLife", "MissingInflatedId"})
@@ -241,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         LangChoice = this.findViewById(R.id.lang_choice);
         String[] Lang_Choice = getResources().getStringArray(R.array.langChoice);
         ArrayAdapter<String> adapter_lang = new ArrayAdapter<>(this, R.layout.list_item, Lang_Choice);
+        adapter_lang.setDropDownViewResource(R.layout.spinner_dropdown_item);
         LangChoice.setAdapter(adapter_lang);
 
         setSupportActionBar(toolbar);
@@ -259,11 +262,11 @@ public class MainActivity extends AppCompatActivity {
         if (gbattery !=0 ) {GlassesBattery.setText("Glasses battery : "+String.format("%d",gbattery)+"%");}
         if(imageON){line0 -= fs; }
         if (clockON) {displayClock(); line0 -= 30;}
+        else {clockHandler.removeCallbacks(clockRunnable);}
         y = line0;
-        if (g!=null && glassesSetting) {g.clear(); displayClock();
+        if (g!=null && glassesSetting) {g.clear(); displayClock();  g.color((byte) 15);
             g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}
         if (g != null && !glassesSetting) { g.cfgSet("cfgLaurent8"); g.clear();
-//            g.shift((short) lftmrg, (short) topmrg);
             while (y > fs+botmrg) {
                 if(imageON){
                     if(BPP4ON){g.imgStream(textAsBitmap(poem[poemLin], fs, italicON, boldON), ImgStreamFormat.MONO_4BPP_HEATSHRINK,
@@ -271,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     else{g.imgStream(textAsBitmap(poem[poemLin], fs, italicON, boldON), ImgStreamFormat.MONO_1BPP,
                             (short) (300-lftmrg-(textAsBitmap(poem[poemLin], fs, italicON, boldON)).getWidth()), (short) y);}
                 }
-                else{g.txt((short) (300-lftmrg), (short) y, Rotation.TOP_LR, (byte) fs, (byte) 0x0F,
+                else{g.txt((short) (300-lftmrg), (short) y, Rotation.TOP_LR, (byte) fs, (byte) 15,
                  international_accent(poem[poemLin]));}
                 poemLin ++; y = y-fs-ls;
             }
@@ -300,14 +303,14 @@ public class MainActivity extends AppCompatActivity {
             catch (IOException e) {e.printStackTrace();}
 
             updateText(fontSize, lineSpace);
-//            clockRunnable = new Runnable() {
-//                @Override
-//                public void run() { displayClock();
-//                    clockHandler.postDelayed(this,60000);
-//                }
-//            };
-//            clockHandler.removeCallbacks(clockRunnable);
-//            clockHandler.postDelayed(clockRunnable,60000); // every minute
+            clockRunnable = new Runnable() {
+                @Override
+                public void run() { displayClock();
+                    clockHandler.postDelayed(this,60000);
+                }
+            };
+            clockHandler.removeCallbacks(clockRunnable);
+            clockHandler.postDelayed(clockRunnable,60000); // every minute
         }
     }
 
@@ -319,8 +322,8 @@ public class MainActivity extends AppCompatActivity {
         String clock = sdf.format(new Date());
         int top=255-topmrg;
         final Glasses g = connectedGlasses;
-        if (g != null) {
-            g.battery(r1 -> { gbattery=r1;
+        if (g != null && clockON) {
+            g.battery(r1 -> { gbattery=r1; connectedGlasses.color((byte) 15);
                 connectedGlasses.cfgSet("ALooK");
                 if (r1 < 25) {connectedGlasses.imgDisplay((byte) 1, (short) (272-lftmrg), (short) (top-26));}
                 else {connectedGlasses.imgDisplay((byte) 0, (short) (272-lftmrg), (short) (top-26));}
@@ -409,6 +412,7 @@ public class MainActivity extends AppCompatActivity {
         LangChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected (AdapterView < ? > parent, View view,int position, long id){
+                ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(MainActivity.this,R.color.grey));
                 String Choice = (String) parent.getItemAtPosition(position);
                 if (Choice.equals("Français")) {poem=poem_fr;}
                 if (Choice.equals("English")) {poem=poem_en;}
@@ -488,6 +492,7 @@ public class MainActivity extends AppCompatActivity {
                 g.rect((short) rgtmrg, (short) botmrg, (short) (303-lftmrg),(short) (255-topmrg));}});
 
     }
+
 
     private void savePreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -616,14 +621,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {super.onPause();}
 
     protected void onStop() {super.onStop();
-//        if(clockHandler != null)
-//            clockHandler.removeCallbacks(clockRunnable); // We stop the callback
+        if(clockHandler != null)
+            clockHandler.removeCallbacks(clockRunnable); // We stop the callback
     }
 
     protected void onDestroy() {
         super.onDestroy();
-//        if(clockHandler != null)
-//            clockHandler.removeCallbacks(clockRunnable); // We stop the callback
+        if(clockHandler != null)
+            clockHandler.removeCallbacks(clockRunnable); // We stop the callback
     }
 
     @Override
